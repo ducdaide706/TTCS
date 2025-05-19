@@ -97,8 +97,8 @@ CREATE TABLE `nhanvien` (
 --
 
 INSERT INTO `nhanvien` (`MaNV`, `HoTen`, `GioiTinh`, `NgaySinh`, `DanToc`, `QueQuan`, `SoDienThoai`, `TinhTrang`, `NgayBatDauLam`, `Email`, `Avatar`, `MaCV`, `MaPB`, `MaTDHV`, `PhanQuyen`, `TaiKhoan`, `MatKhau`) VALUES
-(5, 'Nguyễn Văn Bình', 1, '1998-02-11', 'Kinh', 'Hà Nội', '0379962045', 1, '2024-01-11', 'nguyenvanb@gmail.com', 'http://localhost/QLNhanVien/uploads/mat-buon-1.jpg', 1, 1, 1, 2, 'nguyenvanbinh', '21232f297a57a5a743894a0e4a801fc3'),
-(6, 'Pham Hoan', 1, '2001-05-06', 'Kinh', 'Cầu Giấy, Hà Nội', '0888999888', 1, '2024-04-22', 'phamhoan@gmail.com', 'http://localhost/QLNhanVien/uploads/download.png', 1, 1, 4, 1, 'phamhoan', '21232f297a57a5a743894a0e4a801fc3'),
+(5, 'Nguyễn Văn Bình', 1, '1998-02-11', 'Kinh', 'Hà Nội', '0379962045', 1, '2024-01-11', 'nguyenvanb@gmail.com', 'http://localhost/QLNhanVien/uploads/avatar11.jpg', 1, 1, 1, 2, 'nguyenvanbinh', '21232f297a57a5a743894a0e4a801fc3'),
+(6, 'Pham Hoan', 1, '2001-05-06', 'Kinh', 'Cầu Giấy, Hà Nội', '0888999888', 1, '2024-04-22', 'phamhoan@gmail.com', 'http://localhost/QLNhanVien/uploads/avatar21tar21.png', 1, 1, 4, 1, 'phamhoan', '21232f297a57a5a743894a0e4a801fc3'),
 (7, 'Nguyễn Văn An', 1, '2024-05-28', 'Kinh', 'Cầu Giấy, Hà Nội', '0379962045', 1, '2024-06-24', 'letrunghieu@gmail.com', 'http://localhost/QLNhanVien/uploads/avatar.jpg', 1, 1, 1, 1, '', '');
 
 -- --------------------------------------------------------
@@ -122,8 +122,8 @@ CREATE TABLE `phongban` (
 --
 
 INSERT INTO `phongban` (`MaPB`, `TenPhongBan`, `DiaChi`, `SoDienThoai`, `Email`, `Website`, `MoTa`) VALUES
-(1, 'Phòng Hành Chính', 'Tầng 2, Tòa ABC, Quận XYZ1', '0999888999', 'a4@ctu.edu.vn', 'hanhchinhcty.vn', 'Phòng tiếp nhận hành chính công ty'),
-(4, 'Phòng IT', 'Tầng 2, Tòa ABC, Quận XYZ1', '0999999999', 'a@ctu.edu.vn', 'phongit.com', 'abcvc');
+(1, 'Phòng Hành Chính', 'Tầng 2, Tòa ABC, Quận XYZ1', '0999888999', 'a4@stu.ptit.edu.vn', 'hanhchinhcty.vn', 'Phòng tiếp nhận hành chính công ty'),
+(4, 'Phòng IT', 'Tầng 2, Tòa ABC, Quận XYZ1', '0999999999', 'a@stu.ptit.edu.vn', 'phongit.com', 'vlit');
 
 -- --------------------------------------------------------
 
@@ -190,9 +190,9 @@ CREATE TABLE `trinhdohocvan` (
 --
 
 INSERT INTO `trinhdohocvan` (`MaTDHV`, `BacTrinhDo`, `ChuyenNganh`, `NamTotNghiep`, `NoiDaoTao`) VALUES
-(1, 'Cử Nhân', 'Tài Chính Ngân Hàng', 2023, 'Đại học Bình Dương'),
+(1, 'Cử Nhân', 'Tài Chính Ngân Hàng', 2023, 'Đại học Ngoại ThươngThương'),
 (3, 'Kỹ Sư', 'Công nghệ thông tin', 2010, 'Đại học Bách Khoa - Hà Nội'),
-(4, 'Kỹ sư', 'Công Nghệ Thông Tin', 2024, 'Đại học Giao Thông Vận Tải');
+(4, 'Kỹ sư', 'Công Nghệ Thông Tin', 2024, 'Học Viện Công Nghệ Bưu Chính Viễn ThôngThông');
 
 --
 -- Indexes for dumped tables
