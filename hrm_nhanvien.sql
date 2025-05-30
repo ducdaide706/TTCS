@@ -16,9 +16,9 @@ SET time_zone = "+00:00";
  /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
  /*!40101 SET NAMES utf8mb4 */;
 
---
 -- Database: `hrm_nhanvien`
---
+CREATE DATABASE IF NOT EXISTS `hrm_nhanvien`;
+USE `hrm_nhanvien`;
 
 -- --------------------------------------------------------
 
@@ -57,11 +57,7 @@ CREATE TABLE `nhanvien` (
   `Email` varchar(100) DEFAULT NULL,
   `Avatar` varchar(255) DEFAULT NULL,
   `MaCV` int(11) DEFAULT NULL,
-  `MaPB` int(11) DEFAULT NULL,
-  `MaTDHV` int(11) DEFAULT NULL,
-  `PhanQuyen` int(11) NOT NULL DEFAULT 1,
-  `TaiKhoan` varchar(255) NOT NULL,
-  `MatKhau` varchar(255) NOT NULL
+  `MaPB` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -103,27 +99,16 @@ CREATE TABLE `traluong` (
 
 -- --------------------------------------------------------
 
--- Table structure for table `trinhdohocvan`
-CREATE TABLE `trinhdohocvan` (
-  `MaTDHV` int(11) NOT NULL,
-  `BacTrinhDo` varchar(50) NOT NULL,
-  `ChuyenNganh` varchar(100) DEFAULT NULL,
-  `NamTotNghiep` int(11) DEFAULT NULL,
-  `NoiDaoTao` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 -- Indexes
 ALTER TABLE `chucvu` ADD PRIMARY KEY (`MaCV`);
 ALTER TABLE `luong` ADD PRIMARY KEY (`MaLuong`), ADD KEY `MaNV` (`MaNV`);
 ALTER TABLE `nhanvien`
   ADD PRIMARY KEY (`MaNV`),
-  ADD KEY `MaCV` (`MaCV`,`MaPB`,`MaTDHV`),
-  ADD KEY `MaPB` (`MaPB`),
-  ADD KEY `MaTDHV` (`MaTDHV`);
+  ADD KEY `MaCV` (`MaCV`),
+  ADD KEY `MaPB` (`MaPB`);
 ALTER TABLE `phongban` ADD PRIMARY KEY (`MaPB`);
 ALTER TABLE `taikhoan` ADD PRIMARY KEY (`TaiKhoan`);
 ALTER TABLE `traluong` ADD PRIMARY KEY (`MaTraLuong`), ADD KEY `MaNV` (`MaNV`);
-ALTER TABLE `trinhdohocvan` ADD PRIMARY KEY (`MaTDHV`);
 
 -- Auto Increment
 ALTER TABLE `chucvu` MODIFY `MaCV` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
@@ -131,7 +116,6 @@ ALTER TABLE `luong` MODIFY `MaLuong` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCRE
 ALTER TABLE `nhanvien` MODIFY `MaNV` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 ALTER TABLE `phongban` MODIFY `MaPB` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 ALTER TABLE `traluong` MODIFY `MaTraLuong` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-ALTER TABLE `trinhdohocvan` MODIFY `MaTDHV` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 -- Foreign Keys
 ALTER TABLE `luong`
@@ -139,17 +123,11 @@ ALTER TABLE `luong`
 
 ALTER TABLE `nhanvien`
   ADD CONSTRAINT `nhanvien_ibfk_1` FOREIGN KEY (`MaCV`) REFERENCES `chucvu` (`MaCV`) ON DELETE SET NULL ON UPDATE NO ACTION,
-  ADD CONSTRAINT `nhanvien_ibfk_2` FOREIGN KEY (`MaPB`) REFERENCES `phongban` (`MaPB`) ON DELETE SET NULL ON UPDATE NO ACTION,
-  ADD CONSTRAINT `nhanvien_ibfk_3` FOREIGN KEY (`MaTDHV`) REFERENCES `trinhdohocvan` (`MaTDHV`) ON DELETE SET NULL ON UPDATE NO ACTION;
+  ADD CONSTRAINT `nhanvien_ibfk_2` FOREIGN KEY (`MaPB`) REFERENCES `phongban` (`MaPB`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 ALTER TABLE `traluong`
   ADD CONSTRAINT `traluong_ibfk_1` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
- /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
- /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 -- Dumping data for table `chucvu`
 INSERT INTO `chucvu` (`MaCV`, `TenCV`, `MoTa`, `LuongCoBan`) VALUES
 (1, 'Nhân Viên', 'Người làm thuê cho công ty, có chức vụ khi mới tham gia là nhân viên.', 8000000),
@@ -163,10 +141,10 @@ INSERT INTO `luong` (`MaLuong`, `HeSoLuong`, `HeSoPhuCap`, `ThuongPhuCap`, `MaNV
 (7, 1.2, 1, 500000, 7);
 
 -- Dumping data for table `nhanvien`
-INSERT INTO `nhanvien` (`MaNV`, `HoTen`, `GioiTinh`, `NgaySinh`, `DanToc`, `QueQuan`, `SoDienThoai`, `TinhTrang`, `NgayBatDauLam`, `Email`, `Avatar`, `MaCV`, `MaPB`, `MaTDHV`, `PhanQuyen`, `TaiKhoan`, `MatKhau`) VALUES
-(1, 'Nguyễn Văn Bình', 1, '1998-02-11', 'Kinh', 'Hà Nội', '0379962045', 1, '2024-01-11', 'nguyenvanb@gmail.com', 'http://localhost/QLNhanVien/uploads/avatar11.jpg', 1, 1, 1, 2, 'nguyenvanbinh', '21232f297a57a5a743894a0e4a801fc3'),
-(2, 'Pham Hoan', 1, '2001-05-06', 'Kinh', 'Cầu Giấy, Hà Nội', '0888999888', 1, '2024-04-22', 'phamhoan@gmail.com', 'http://localhost/QLNhanVien/uploads/avatar21tar21.png', 1, 1, 4, 1, 'phamhoan', '21232f297a57a5a743894a0e4a801fc3'),
-(3, 'Nguyễn Văn An', 1, '2024-05-28', 'Kinh', 'Cầu Giấy, Hà Nội', '0379962045', 1, '2024-06-24', 'letrunghieu@gmail.com', 'http://localhost/QLNhanVien/uploads/avatar.jpg', 1, 1, 1, 1, '', '');
+INSERT INTO `nhanvien` (`MaNV`, `HoTen`, `GioiTinh`, `NgaySinh`, `DanToc`, `QueQuan`, `SoDienThoai`, `TinhTrang`, `NgayBatDauLam`, `Email`, `Avatar`, `MaCV`, `MaPB`) VALUES
+(1, 'Nguyễn Văn Bình', 1, '1998-02-11', 'Kinh', 'Hà Nội', '0379962045', 1, '2024-01-11', 'nguyenvanb@gmail.com', 'http://localhost/QLNhanVien/uploads/avatar11.jpg', 1, 1),
+(2, 'Pham Hoan', 1, '2001-05-06', 'Kinh', 'Cầu Giấy, Hà Nội', '0888999888', 1, '2024-04-22', 'phamhoan@gmail.com', 'http://localhost/QLNhanVien/uploads/avatar21tar21.png', 1, 1),
+(3, 'Nguyễn Văn An', 1, '2024-05-28', 'Kinh', 'Cầu Giấy, Hà Nội', '0379962045', 1, '2024-06-24', 'letrunghieu@gmail.com', 'http://localhost/QLNhanVien/uploads/avatar.jpg', 1, 1);
 
 -- Dumping data for table `phongban`
 INSERT INTO `phongban` (`MaPB`, `TenPhongBan`, `DiaChi`, `SoDienThoai`, `Email`, `Website`, `MoTa`) VALUES
@@ -183,8 +161,8 @@ INSERT INTO `traluong` (`MaTraLuong`, `MaNV`, `Thang`, `Nam`, `PhuCapKhac`, `Thu
 (8, 6, 4, 2024, 0, 0, 0, 10100000),
 (9, 7, 6, 2024, 0, 500000, 100000, 10500000);
 
--- Dumping data for table `trinhdohocvan`
-INSERT INTO `trinhdohocvan` (`MaTDHV`, `BacTrinhDo`, `ChuyenNganh`, `NamTotNghiep`, `NoiDaoTao`) VALUES
-(1, 'Cử Nhân', 'Tài Chính Ngân Hàng', 2023, 'Đại học Ngoại ThươngThương'),
-(3, 'Kỹ Sư', 'Công nghệ thông tin', 2010, 'Đại học Bách Khoa - Hà Nội'),
-(4, 'Kỹ sư', 'Công Nghệ Thông Tin', 2024, 'Học Viện Công Nghệ Bưu Chính Viễn ThôngThông');
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+ /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+ /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
