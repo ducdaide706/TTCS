@@ -34,14 +34,21 @@ if ($result->num_rows !== 1 || $result->fetch_assoc()['PhanQuyen'] !== 3) {
 }
 $stmt->close();
 
+// Xử lý tìm kiếm
+$search_query = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+
 // Xử lý phân trang
 $records_per_page = 10; // Số bản ghi mỗi trang
 $page = isset($_GET['trang']) && is_numeric($_GET['trang']) ? (int)$_GET['trang'] : 1;
 $offset = ($page - 1) * $records_per_page;
 
 // Đếm tổng số bản ghi trong bảng traluong
-$sql_count = "SELECT COUNT(*) as total FROM traluong";
-$result_count = $conn->query($sql_count);
+$sql_count = "SELECT COUNT(*) as total FROM traluong t JOIN nhanvien n ON t.MaNV = n.MaNV WHERE n.HoTen LIKE ?";
+$search_param = "%" . $search_query . "%";
+$stmt = $conn->prepare($sql_count);
+$stmt->bind_param("s", $search_param);
+$stmt->execute();
+$result_count = $stmt->get_result();
 if (!$result_count) {
     die("Lỗi truy vấn đếm tổng số bản ghi: " . $conn->error);
 }
@@ -54,9 +61,10 @@ $sql = "SELECT t.MaTraLuong, n.HoTen, n.NgaySinh, n.GioiTinh, p.TenPhongBan, c.T
         LEFT JOIN nhanvien n ON t.MaNV = n.MaNV
         LEFT JOIN phongban p ON n.MaPB = p.MaPB
         LEFT JOIN chucvu c ON n.MaCV = c.MaCV
+        WHERE n.HoTen LIKE ?
         LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $records_per_page, $offset);
+$stmt->bind_param("sii", $search_param, $records_per_page, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
 $list = $result->fetch_all(MYSQLI_ASSOC);
@@ -87,6 +95,18 @@ require(__DIR__ . '/../layouts/header.php');
                 <div class="card-body">
                     <h4 class="card-title">Danh sách thông tin bảng lương</h4>
                     <div id="basic-datatable_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                        <div class="row mb-3">
+                            <div class="col-sm-12 col-md-6">
+                                <form method="GET" action="">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="search" value="<?php echo htmlspecialchars($search_query); ?>" placeholder="Tìm theo tên nhân viên...">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit">Tìm</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="table-responsive">
@@ -136,7 +156,7 @@ require(__DIR__ . '/../layouts/header.php');
                                     <ul class="pagination pagination-rounded">
                                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                                             <li style="margin-right: 5px;" class="paginate_button page-item <?php echo $i === $page ? 'active' : ''; ?>">
-                                                <a href="/QLNhanVien_thuan/src/TraLuong/TraLuong.php?path=tra-luong/trang&trang=<?php echo $i; ?>" class="page-link"><?php echo $i; ?></a>
+                                                <a href="/QLNhanVien_thuan/src/TraLuong/TraLuong.php?path=tra-luong/trang&trang=<?php echo $i; ?><?php echo $search_query ? '&search=' . urlencode($search_query) : ''; ?>" class="page-link"><?php echo $i; ?></a>
                                             </li>
                                         <?php endfor; ?>
                                     </ul>
@@ -144,9 +164,9 @@ require(__DIR__ . '/../layouts/header.php');
                             </div>
                         </div>
                     </div>
-                </div> <!-- end card body-->
-            </div> <!-- end card -->
-        </div><!-- end col-->
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

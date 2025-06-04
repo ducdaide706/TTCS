@@ -59,21 +59,6 @@ if (empty($detail)) {
 }
 $detail = $detail; // Đảm bảo $detail là mảng chứa thông tin nhân viên
 
-// Lấy thông tin trình độ học vấn (nếu bảng hocvan tồn tại)
-$has_hocvan = true;
-$sql_hocvan_check = "SHOW TABLES LIKE 'hocvan'";
-$result_hocvan_check = $conn->query($sql_hocvan_check);
-if ($result_hocvan_check->num_rows === 0) {
-    $has_hocvan = false;
-}
-
-$hocvan = [];
-if ($has_hocvan) {
-    $sql_hocvan = "SELECT MaTDHV, BacTrinhDo, ChuyenNganh, NoiDaoTao FROM hocvan";
-    $result_hocvan = $conn->query($sql_hocvan);
-    $hocvan = $result_hocvan ? $result_hocvan->fetch_all(MYSQLI_ASSOC) : [];
-}
-
 // Lấy danh sách chức vụ và phòng ban
 $sql_chucvu = "SELECT MaCV, TenCV FROM chucvu";
 $result_chucvu = $conn->query($sql_chucvu);
@@ -123,21 +108,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Cập nhật thông tin vào cơ sở dữ liệu
-    if ($has_hocvan && $trinhdohocvan !== null) {
-        $sql_update = "UPDATE nhanvien SET HoTen = ?, NgaySinh = ?, GioiTinh = ?, DanToc = ?, QueQuan = ?, NgayBatDauLam = ?, SoDienThoai = ?, Email = ?, TinhTrang = ?, MaCV = ?, MaPB = ?, MaTDHV = ?, Avatar = ? WHERE MaNV = ?";
-        $stmt = $conn->prepare($sql_update);
-        if ($stmt === false) {
-            die("Lỗi prepare update: " . $conn->error);
-        }
-        $stmt->bind_param("ssisssisiiisi", $hoten, $ngaysinh, $gioitinh, $dantoc, $quequan, $ngaybatdaulam, $sodienthoai, $email, $tinhtrang, $chucvu, $phongban, $trinhdohocvan, $avatar, $id);
-    } else {
-        $sql_update = "UPDATE nhanvien SET HoTen = ?, NgaySinh = ?, GioiTinh = ?, DanToc = ?, QueQuan = ?, NgayBatDauLam = ?, SoDienThoai = ?, Email = ?, TinhTrang = ?, MaCV = ?, MaPB = ?, Avatar = ? WHERE MaNV = ?";
-        $stmt = $conn->prepare($sql_update);
-        if ($stmt === false) {
-            die("Lỗi prepare update: " . $conn->error);
-        }
-        $stmt->bind_param("ssisssisiiisi", $hoten, $ngaysinh, $gioitinh, $dantoc, $quequan, $ngaybatdaulam, $sodienthoai, $email, $tinhtrang, $chucvu, $phongban, $avatar, $id);
+    $sql_update = "UPDATE nhanvien SET HoTen = ?, NgaySinh = ?, GioiTinh = ?, DanToc = ?, QueQuan = ?, NgayBatDauLam = ?, SoDienThoai = ?, Email = ?, TinhTrang = ?, MaCV = ?, MaPB = ?, Avatar = ? WHERE MaNV = ?";
+    $stmt = $conn->prepare($sql_update);
+    if ($stmt === false) {
+        die("Lỗi prepare update: " . $conn->error);
     }
+    $stmt->bind_param("ssisssisiiisi", $hoten, $ngaysinh, $gioitinh, $dantoc, $quequan, $ngaybatdaulam, $sodienthoai, $email, $tinhtrang, $chucvu, $phongban, $avatar, $id);
 
     if ($stmt->execute()) {
         // Cập nhật thành công, làm mới dữ liệu
@@ -232,7 +208,7 @@ require(__DIR__ . '/../layouts/header.php');
                                                     <input type="email" id="simpleinput" class="form-control" placeholder="Email" required name="email" value="<?php echo htmlspecialchars($detail[0]['Email']); ?>">
                                                 </div>
                                                 <div class="col-4">
-                                                    <label for="simpleinput">Trình Trạng</label>
+                                                    <label for="simpleinput">Tình Trạng</label>
                                                     <select name="tinhtrang" required class="form-control">
                                                         <option value="1" <?php echo $detail[0]['TinhTrang'] == 1 ? 'selected' : ''; ?>>Đang làm việc</option>
                                                         <option value="0" <?php echo $detail[0]['TinhTrang'] == 0 ? 'selected' : ''; ?>>Đã nghỉ việc</option>
@@ -256,18 +232,6 @@ require(__DIR__ . '/../layouts/header.php');
                                                         <?php endforeach; ?>
                                                     </select>
                                                 </div>
-                                                <?php if ($has_hocvan): ?>
-                                                <div class="col-4">
-                                                    <label for="simpleinput">Trình Độ Học Vấn</label>
-                                                    <select name="trinhdohocvan" required class="form-control">
-                                                        <?php foreach ($hocvan as $hv): ?>
-                                                            <option value="<?php echo htmlspecialchars($hv['MaTDHV']); ?>" <?php echo $detail[0]['MaTDHV'] == $hv['MaTDHV'] ? 'selected' : ''; ?>>
-                                                                <?php echo htmlspecialchars($hv['BacTrinhDo'] . ' - ' . $hv['ChuyenNganh'] . ' - ' . $hv['NoiDaoTao']); ?>
-                                                            </option>
-                                                        <?php endforeach; ?>
-                                                    </select>
-                                                </div>
-                                                <?php endif; ?>
                                             </div>
                                             <div class="form-group row mt-4">
                                                 <div class="col-12 text-left">

@@ -44,8 +44,33 @@ $stmt_traluong->bind_param("ii", $current_month, $current_year);
 $stmt_traluong->execute();
 $result_traluong = $stmt_traluong->get_result();
 $tongtraluong = $result_traluong->fetch_assoc()['total'];
-
 $stmt_traluong->close();
+
+// Truy vấn danh sách nhân viên có sinh nhật hôm nay 
+$current_date = date('Y-m-d'); 
+$sql_birthday = "SELECT HoTen FROM nhanvien WHERE DAY(NgaySinh) = DAY(?) AND MONTH(NgaySinh) = MONTH(?)";
+$stmt_birthday = $conn->prepare($sql_birthday);
+$stmt_birthday->bind_param("ss", $current_date, $current_date);
+$stmt_birthday->execute();
+$result_birthday = $stmt_birthday->get_result();
+$birthdays = $result_birthday->fetch_all(MYSQLI_ASSOC);
+$stmt_birthday->close();
+
+// Xử lý hiển thị sinh nhật
+$birthday_message = "Hôm nay không có sinh nhật nào";
+if (count($birthdays) > 0) {
+    if (count($birthdays) == 1) {
+        $birthday_message = "Hôm nay là sinh nhật của " . htmlspecialchars($birthdays[0]['HoTen']);
+    } elseif (count($birthdays) <= 3) {
+        $names = array_map(function($person) { return htmlspecialchars($person['HoTen']); }, $birthdays);
+        $birthday_message = "Hôm nay là sinh nhật của " . implode(", ", $names);
+    } else {
+        $first_name = htmlspecialchars($birthdays[0]['HoTen']);
+        $others_count = count($birthdays) - 1;
+        $birthday_message = "Hôm nay là sinh nhật của $first_name và $others_count người khác";
+    }
+}
+
 $conn->close();
 
 require(__DIR__.'/layouts/header.php');
@@ -115,6 +140,18 @@ require(__DIR__.'/layouts/header.php');
                         <h6 class="text-muted text-uppercase mt-0">ĐÃ NHẬN LƯƠNG THÁNG <?php echo date('m'); ?></h6>
                         <h3 class="mb-3" data-plugin="counterup">
                             <?php echo $tongtraluong; ?> nhân viên
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <i class="bx bxs-cake float-right m-0 h2 text-muted"></i>
+                        <h6 class="text-muted text-uppercase mt-0">SINH NHẬT HÔM NAY</h6>
+                        <h3 class="mb-3">
+                            <?php echo $birthday_message; ?>
                         </h3>
                     </div>
                 </div>

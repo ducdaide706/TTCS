@@ -156,5 +156,4 @@ require(__DIR__ . '/../layouts/header.php');
 </style>
 <?php
 require(__DIR__ . '/../layouts/footer.php');
-$conn->close();
 ?>
